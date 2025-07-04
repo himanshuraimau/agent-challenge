@@ -1,0 +1,310 @@
+{
+  "categories": [
+    { "id": "basic", "name": "Basic Jobs", "description": "Simple jobs for testing and demonstration" },
+    { "id": "ai-model", "name": "AI Models", "description": "Large language models and text generation" },
+    { "id": "image-generation", "name": "Image Generation", "description": "Image generation models like Stable Diffusion" },
+    { "id": "training", "name": "Training Tools", "description": "Tools for fine-tuning and training models" }
+  ],
+  
+  "templates": {
+    "hello_world": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "cli",
+        "name": "Hello World",
+        "description": "Simple Hello World job for testing",
+        "category": "basic"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "hello-world",
+          "args": {
+            "cmd": "echo Hello Theoriq",
+            "image": "ubuntu"
+          }
+        }
+      ]
+    },
+    
+    "tiny_llama": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "cli",
+        "name": "TinyLlama",
+        "description": "Run TinyLlama inference with custom prompt",
+        "category": "ai-model"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "tinyllama",
+          "args": {
+            "cmd": ["'Write me a story about Tony the tiny hawk'"],
+            "image": "docker.io/jeisses/tinyllama:v4",
+            "gpu": true
+          }
+        }
+      ]
+    },
+    
+    "deepseek_webui": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "system_requirements": {
+          "required_vram": 6
+        },
+        "name": "DeepSeek WebUI",
+        "description": "Run DeepSeek with web interface on ports 8000 and 9000",
+        "category": "ai-model"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "Deepseek-webui",
+          "args": {
+            "image": "docker.io/djmbritt/vllm-webui:127.0.0.1",
+            "gpu": true,
+            "expose": [
+              8000,
+              9000
+            ]
+          }
+        }
+      ]
+    },
+    
+    "sd15_auto": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "name": "Stable Diffusion 1.5 (A1111)",
+        "description": "Run Stable Diffusion 1.5 with Automatic1111 WebUI",
+        "category": "image-generation"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "SD15-auto",
+          "args": {
+            "cmd": [
+              "/bin/sh", "-c", 
+              "python -u launch.py --listen --port 7860 --enable-insecure-extension-access"
+            ],
+            "image": "docker.io/nosana/automatic1111:0.0.1",
+            "gpu": true,
+            "expose": 7860,
+            "resources": [
+              {
+                "type": "S3",
+                "url": "https://models.nosana.io/stable-diffusion/1.5",
+                "target": "/stable-diffusion-webui/models/Stable-diffusion"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    
+    "axolotl": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "system_requirements": {
+          "required_vram": 4
+        },
+        "name": "Axolotl",
+        "description": "Run Axolotl Jupyter notebook for model fine-tuning",
+        "category": "training"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "Axo",
+          "args": {
+            "image": "docker.io/winglian/axolotl-cloud:main-20250221",
+            "cmd": [
+              "jupyter",
+              "notebook",
+              "--ip=0.0.0.0",
+              "--port=8888",
+              "--no-browser",
+              "--allow-root",
+              "--ServerApp.token=''",
+              "--ServerApp.password=''"
+            ],
+            "expose": 8888,
+            "gpu": true
+          }
+        }
+      ]
+    },
+    
+    "flux_comfy": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "name": "Flux with ComfyUI",
+        "description": "Run Flux model with ComfyUI interface",
+        "category": "image-generation"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "Flux-comfy",
+          "args": {
+            "cmd": [],
+            "image": "docker.io/nosana/comfyui:0.0.0",
+            "gpu": true,
+            "expose": 8188,
+            "resources": [
+              {
+                "type": "S3",
+                "url": "https://models.nosana.io/flux/schnell",
+                "target": "/root/ComfyUI/models/checkpoints"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    
+    "sd15_comfy": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "name": "Stable Diffusion 1.5 (ComfyUI)",
+        "description": "Run Stable Diffusion 1.5 with ComfyUI interface",
+        "category": "image-generation"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "SD15-comfy",
+          "args": {
+            "cmd": [],
+            "image": "docker.io/nosana/comfyui:0.0.0",
+            "gpu": true,
+            "expose": 8188,
+            "resources": [
+              {
+                "type": "S3",
+                "url": "https://models.nosana.io/stable-diffusion/1.5",
+                "target": "/root/ComfyUI/models/checkpoints"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    
+    "sdxl_comfy": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "name": "Stable Diffusion XL (ComfyUI)",
+        "description": "Run Stable Diffusion XL with ComfyUI interface",
+        "category": "image-generation"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "SDXL-comfy",
+          "args": {
+            "cmd": [],
+            "image": "docker.io/nosana/comfyui:0.0.0",
+            "gpu": true,
+            "expose": 8188,
+            "resources": [
+              {
+                "type": "S3",
+                "url": "https://models.nosana.io/stable-diffusion/sd-xl",
+                "target": "/root/ComfyUI/models/checkpoints"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    
+    "janus1b": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "system_requirements": {
+          "required_vram": 3
+        },
+        "name": "Janus Pro 1B",
+        "description": "Run Janus Pro 1B model (low VRAM requirements)",
+        "category": "ai-model"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "Janus1b",
+          "args": {
+            "cmd": [],
+            "gpu": true,
+            "image": "docker.io/nosana/janus-pro:0.0.0",
+            "expose": 7860,
+            "resources": [
+              {
+                "url": "https://models.nosana.io/hugging-face/deepseek/janus/models-deepseek-ai-Janus-Pro-1B",
+                "type": "S3",
+                "target": "/Janus/models/models--deepseek-ai--Janus-Pro-1B",
+                "allowWrite": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    
+    "janus7b": {
+      "version": "0.1",
+      "type": "container",
+      "meta": {
+        "trigger": "dashboard",
+        "system_requirements": {
+          "required_vram": 14
+        },
+        "name": "Janus Pro 7B",
+        "description": "Run Janus Pro 7B model (higher quality, requires more VRAM)",
+        "category": "ai-model"
+      },
+      "ops": [
+        {
+          "type": "container/run",
+          "id": "Janus7b",
+          "args": {
+            "cmd": [],
+            "env": {
+              "MODEL_PATH": "deepseek-ai/Janus-Pro-7B"
+            },
+            "gpu": true,
+            "image": "docker.io/nosana/janus-pro:0.0.0",
+            "expose": 7860,
+            "resources": [
+              {
+                "url": "https://models.nosana.io/hugging-face/deepseek/janus/models-deepseek-ai-Janus-Pro-7B",
+                "type": "S3",
+                "target": "/Janus/models/models--deepseek-ai--Janus-Pro-7B",
+                "allowWrite": true
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

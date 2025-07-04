@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosana Agent - Distributed GPU Computing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <svg width="40" height="40" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M231.58 127.96C231.58 185.78 184.82 232.54 127 232.54C69.18 232.54 22.42 185.78 22.42 127.96C22.42 70.14 69.18 23.38 127 23.38C184.82 23.38 231.58 70.14 231.58 127.96Z" fill="url(#paint0_linear)"/>
+                    <path d="M127.18 170.97C124.14 170.97 121.05 170.26 118.31 168.93L76.24 147.61C70.59 144.85 66.8 139.21 66.8 133.01V90.01C66.8 83.8 70.59 78.25 76.15 75.59L118.22 53.91C123.87 51.25 130.49 51.25 136.05 53.91L178.12 75.59C183.77 78.34 187.47 83.9 187.47 90.1V132.92C187.47 139.21 183.68 144.76 178.12 147.42L136.05 168.93C133.3 170.35 130.21 170.97 127.18 170.97Z" fill="black"/>
+                    <path d="M127.18 158.76C125.61 158.76 124.14 158.41 122.66 157.61L97.12 144.49C94.18 142.88 92.25 139.75 92.25 136.36V110.12C92.25 106.74 94.18 103.61 97.12 102L122.66 88.88C125.61 87.27 129.19 87.27 132.13 88.88L157.67 102C160.61 103.61 162.55 106.74 162.55 110.12V136.36C162.55 139.75 160.61 142.88 157.67 144.49L132.13 157.61C130.66 158.32 129.09 158.76 127.18 158.76Z" fill="url(#paint1_linear)"/>
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="127" y1="23.38" x2="127" y2="232.54" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#4f46ff"/>
+                            <stop offset="1" stop-color="#10e0ac"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear" x1="127.4" y1="87.9" x2="127.4" y2="158.76" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#4f46ff"/>
+                            <stop offset="1" stop-color="#10e0ac"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>Nosana Agent</h1>
+            </div>
+            <p>Distributed GPU computing on Solana using NOS tokens</p>
+            <div class="badge-container">
+                <span class="badge"><i class="fa-solid fa-layer-group"></i> Powered by Nosana SDK</span>
+                <span class="badge"><i class="fa-brands fa-solana"></i> Solana Network</span>
+            </div>
+        </header>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-content">
+                        <strong>👋 Welcome to Nosana Agent!</strong><br><br>
+                        This interface lets you run AI models on the Nosana distributed GPU network.<br><br>
+                        To get started, enter your Solana private key below (optional) and send a message. The agent will guide you through selecting and deploying a model using NOS tokens (with minimal SOL for transaction fees).
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="private-key-section">
+                    <label for="privateKey"><i class="fa-solid fa-key"></i> Solana Private Key (optional):</label>
+                    <div class="input-with-toggle">
+                        <input type="password" id="privateKey" placeholder="Enter your Solana private key..." autocomplete="off">
+                        <button type="button" id="toggleKey" onclick="togglePrivateKeyVisibility()"><i class="fa-solid fa-eye"></i></button>
+                    </div>
+                    <span class="input-hint">Your key is stored locally and used only for job execution</span>
+                </div>
+
+                <div class="model-selection-section">
+                    <label><i class="fa-solid fa-microchip"></i> Model Selection:</label>
+                    <div class="model-selection-controls">
+                        <select id="modelCategoryFilter">
+                            <option value="all">All Categories</option>
+                            <option value="basic">Basic Jobs</option>
+                            <option value="ai-model">AI Models</option>
+                            <option value="image-generation">Image Generation</option>
+                            <option value="training">Training Tools</option>
+                        </select>
+                        <select id="modelSelector">
+                            <option value="">Select a model...</option>
+                            <!-- Will be populated dynamically -->
+                        </select>
+                    </div>
+                    <span class="input-hint">Select a model or ask the agent for recommendations</span>
+                </div>
+                
+                <div class="chat-input-wrapper">
+                    <input type="text" id="messageInput" placeholder="Type your message to run a Nosana job..." autocomplete="off">
+                    <button id="sendButton" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2023 Nosana Network · <a href="https://nosana.io" target="_blank">Visit Website</a> · <a href="https://docs.nosana.io" target="_blank">Documentation</a></p>
+        </footer>
+
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p>Running Nosana Job on Distributed GPU Network...</p>
+                <span class="loading-hint">This may take a few moments</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
