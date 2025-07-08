@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosana Agent - Distributed GPU Computing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Skip navigation for accessibility -->
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
+    
+    <div class="app-layout">
+        <!-- Mobile menu toggle -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar" role="complementary" aria-label="Navigation and settings">
+            <div class="sidebar-header">
+                <svg width="32" height="32" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M231.58 127.96C231.58 185.78 184.82 232.54 127 232.54C69.18 232.54 22.42 185.78 22.42 127.96C22.42 70.14 69.18 23.38 127 23.38C184.82 23.38 231.58 70.14 231.58 127.96Z" fill="url(#paint0_linear)"/>
+                    <path d="M127.18 170.97C124.14 170.97 121.05 170.26 118.31 168.93L76.24 147.61C70.59 144.85 66.8 139.21 66.8 133.01V90.01C66.8 83.8 70.59 78.25 76.15 75.59L118.22 53.91C123.87 51.25 130.49 51.25 136.05 53.91L178.12 75.59C183.77 78.34 187.47 83.9 187.47 90.1V132.92C187.47 139.21 183.68 144.76 178.12 147.42L136.05 168.93C133.3 170.35 130.21 170.97 127.18 170.97Z" fill="black"/>
+                    <path d="M127.18 158.76C125.61 158.76 124.14 158.41 122.66 157.61L97.12 144.49C94.18 142.88 92.25 139.75 92.25 136.36V110.12C92.25 106.74 94.18 103.61 97.12 102L122.66 88.88C125.61 87.27 129.19 87.27 132.13 88.88L157.67 102C160.61 103.61 162.55 106.74 162.55 110.12V136.36C162.55 139.75 160.61 142.88 157.67 144.49L132.13 157.61C130.66 158.32 129.09 158.76 127.18 158.76Z" fill="url(#paint1_linear)"/>
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="127" y1="23.38" x2="127" y2="232.54" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#4f46ff"/>
+                            <stop offset="1" stop-color="#10e0ac"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear" x1="127.4" y1="87.9" x2="127.4" y2="158.76" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#4f46ff"/>
+                            <stop offset="1" stop-color="#10e0ac"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="sidebar-title">
+                    <h3>Nosana</h3>
+                    <p>GPU Network</p>
+                </div>
+            </div>
+
+            <div class="api-key-section">
+                <label for="privateKey"><i class="fa-solid fa-key" aria-hidden="true"></i> API Key</label>
+                <div class="input-with-toggle">
+                    <input 
+                        type="password" 
+                        id="privateKey" 
+                        placeholder="Solana private key..." 
+                        autocomplete="off"
+                        aria-describedby="key-hint"
+                    >
+                    <button 
+                        type="button" 
+                        id="toggleKey" 
+                        onclick="togglePrivateKeyVisibility()"
+                        aria-label="Toggle private key visibility"
+                    >
+                        <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <span class="input-hint" id="key-hint">Stored locally for job execution</span>
+            </div>
+
+            <div class="status-section" role="status" aria-label="Network status">
+                <div class="status-item">
+                    <i class="fa-solid fa-circle status-online" aria-hidden="true"></i>
+                    <span>Network Online</span>
+                </div>
+                <div class="status-item">
+                    <i class="fa-solid fa-microchip" aria-hidden="true"></i>
+                    <span>GPU Available</span>
+                </div>
+            </div>
+
+            <div class="network-stats">
+                <h4>Network Stats</h4>
+                <div class="stat-item">
+                    <span class="stat-label">Active Nodes:</span>
+                    <span class="stat-value">1,247</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Jobs Completed:</span>
+                    <span class="stat-value">45,892</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg. Response:</span>
+                    <span class="stat-value">2.3s</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content" role="main">
+            <header class="header">
+                <div class="header-content">
+                    <h1>Nosana Agent</h1>
+                    <p>Distributed GPU computing on Solana blockchain</p>
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn" onclick="clearChat()">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        Clear Chat
+                    </button>
+                </div>
+            </header>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Chat conversation">
+                    <div class="message bot" role="article">
+                        <div class="message-avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <strong>👋 Welcome to Nosana Agent!</strong><br><br>
+                            I'm your AI assistant for distributed GPU computing on the Nosana network. I can help you:
+                            <ul>
+                                <li>Run AI models and inference jobs</li>
+                                <li>Check network status and pricing</li>
+                                <li>Manage your GPU compute resources</li>
+                                <li>Execute distributed computing tasks</li>
+                            </ul>
+                            Ask me anything or try the suggestions below!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="suggested-questions" id="suggestedQuestions" role="region" aria-label="Suggested questions">
+                    <div class="suggestions-title">💡 Try asking:</div>
+                    <div class="suggestion-pills">
+                        <button class="suggestion-pill" onclick="useSuggestion(this)" tabindex="0">
+                            <i class="fa-solid fa-brain"></i>
+                            What models can I run?
+                        </button>
+                        <button class="suggestion-pill" onclick="useSuggestion(this)" tabindex="0">
+                            <i class="fa-solid fa-text-width"></i>
+                            Run a text generation model
+                        </button>
+                        <button class="suggestion-pill" onclick="useSuggestion(this)" tabindex="0">
+                            <i class="fa-solid fa-image"></i>
+                            Generate an image
+                        </button>
+                        <button class="suggestion-pill" onclick="useSuggestion(this)" tabindex="0">
+                            <i class="fa-solid fa-chart-line"></i>
+                            Check network status
+                        </button>
+                        <button class="suggestion-pill" onclick="useSuggestion(this)" tabindex="0">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                            How much does it cost?
+                        </button>
+                        <button class="suggestion-pill" onclick="useSuggestion(this)" tabindex="0">
+                            <i class="fa-solid fa-code"></i>
+                            Run custom code
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <form class="chat-input-wrapper" onsubmit="handleFormSubmit(event)" role="search" aria-label="Send message">
+                        <label for="messageInput" class="sr-only">Type your message</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="messageInput" 
+                                placeholder="Ask about GPU jobs, models, or pricing..." 
+                                autocomplete="off"
+                                aria-describedby="input-hint"
+                                maxlength="1000"
+                            >
+                            <div class="input-actions">
+                                <button 
+                                    type="button"
+                                    id="attachButton"
+                                    class="attach-btn"
+                                    aria-label="Attach file"
+                                    title="Attach file"
+                                >
+                                    <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+                                </button>
+                                <button 
+                                    type="submit"
+                                    id="sendButton" 
+                                    aria-label="Send message"
+                                    disabled
+                                >
+                                    <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <span class="sr-only" id="input-hint">Press Enter to send message</span>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <p>© 2024 Nosana Network</p>
+            <div class="footer-links">
+                <a href="https://nosana.io" target="_blank" rel="noopener noreferrer">Website</a>
+                <a href="https://docs.nosana.io" target="_blank" rel="noopener noreferrer">Documentation</a>
+                <a href="https://github.com/nosana-ci" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://discord.gg/nosana" target="_blank" rel="noopener noreferrer">Discord</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay" role="dialog" aria-modal="true" aria-labelledby="loading-title" aria-describedby="loading-description">
+        <div class="loading-content">
+            <div class="spinner" aria-hidden="true"></div>
+            <h2 id="loading-title">Processing on Nosana GPU Network...</h2>
+            <p id="loading-description" class="loading-hint">Connecting to distributed nodes</p>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-text" id="progressText">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error notification -->
+    <div class="error-notification" id="errorNotification" role="alert" aria-live="assertive">
+        <div class="error-content">
+            <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
+            <span class="error-message"></span>
+            <button class="error-close" onclick="hideError()" aria-label="Close error message">
+                <i class="fa-solid fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Success notification -->
+    <div class="success-notification" id="successNotification" role="alert" aria-live="polite">
+        <div class="success-content">
+            <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+            <span class="success-message"></span>
+            <button class="success-close" onclick="hideSuccess()" aria-label="Close success message">
+                <i class="fa-solid fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+

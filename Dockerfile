@@ -1,38 +1,70 @@
-FROM ollama/ollama:0.7.0
+# Multi-stage Docker build for Nosana Agent Challenge
+# Stage 1: Build the Mastra backend
+FROM node:20-alpine AS backend-builder
 
-# Qwen2.5:1.5b - Docker
-ENV API_BASE_URL=http://127.0.0.1:11434/api
-ENV MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
+# Set working directory
+WORKDIR /app
 
-# Qwen2.5:32b = Docker
-# ENV API_BASE_URL=http://127.0.0.1:11434/api
-# ENV MODEL_NAME_AT_ENDPOINT=qwen2.5:32b
+# Install pnpm
+RUN npm install -g pnpm
 
-# Install system dependencies and Node.js
-RUN apt-get update && apt-get install -y \
-  curl \
-  && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-  && apt-get install -y nodejs \
-  && rm -rf /var/lib/apt/lists/* \
-  && npm install -g pnpm
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY src/ ./src/
+COPY tsconfig.json ./
+
+# Build the Mastra application
+RUN pnpm run build
+
+# Stage 2: Production
+FROM node:20-alpine AS production
+
+# Install pnpm and http-server
+RUN npm install -g pnpm http-server
 
 # Create app directory
 WORKDIR /app
 
-# Copy package files
-COPY .env.docker package.json pnpm-lock.yaml ./
+# Copy built Mastra application from builder stage
+COPY --from=backend-builder /app/.mastra/output ./
 
-# Install dependencies
-RUN pnpm install
+# Copy frontend static files
+COPY front/ ./frontend/
 
-# Copy the rest of the application
-COPY . .
+# Accept build args and set as environment variables
+ARG GOOGLE_GENERATIVE_AI_API_KEY
+ENV GOOGLE_GENERATIVE_AI_API_KEY=$GOOGLE_GENERATIVE_AI_API_KEY
 
-# Build the project
-RUN pnpm run build
+# Copy .env file if it exists (for local development)
+COPY .env* ./
 
-# Override the default entrypoint
-ENTRYPOINT ["/bin/sh", "-c"]
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
 
-# Start Ollama service and pull the model, then run the app
-CMD ["ollama serve & sleep 5 && ollama pull ${MODEL_NAME_AT_ENDPOINT} && node .mastra/output/index.mjs"]
+# Change ownership of the app directory
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+# Expose ports
+EXPOSE 3000 8080
+
+# Environment variables
+ENV NODE_ENV=production
+ENV PORT=8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "const http = require('http'); \
+               const req = http.request({hostname:'localhost',port:8080,path:'/',timeout:5000}, \
+               (res) => process.exit(res.statusCode < 400 ? 0 : 1)); \
+               req.on('error', () => process.exit(1)); \
+               req.end();"
+
+# Start both backend and frontend
+CMD ["sh", "-c", "node --import=./instrumentation.mjs ./index.mjs & http-server ./frontend -p 3000 --cors -c-1 && wait"]

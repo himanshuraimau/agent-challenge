@@ -11,6 +11,42 @@ Agent-101: Build your first agent
 
 The main goal of this `Nosana Builders Challenge` to teach participants to build and deploy agents. This first step will be in running a basic AI agent and giving it some basic functionality. Participants will add a tool, for the tool calling capabilities of the agent. These are basically some TypeScript functions, that will, for example, retrieve some data from a weather API, post a tweet via an API call, etc.
 
+## Quick Start with Docker
+
+The easiest way to run this project is using Docker Compose:
+
+```bash
+# Clone the repository
+git clone <your-fork-url>
+cd agent-challenge
+
+# Start the application with Docker
+docker-compose up --build
+```
+
+This will:
+- Build and start the Mastra backend on port 8080
+- Serve the frontend on port 3000
+- Automatically handle all dependencies and environment setup
+
+**Access the application:**
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8080
+
+To stop the application:
+```bash
+docker-compose down
+```
+
+## Development Setup
+
+If you prefer to run locally for development:
+
+```bash
+pnpm install
+pnpm run dev
+```
+
 ## [Mastra](https://github.com/mastra-ai/mastra)
 
 For this challenge we will be using Mastra to build our tool.
@@ -23,16 +59,6 @@ We recommend reading the following sections to get started with how to create an
 
 - <https://mastra.ai/en/docs/agents/overview>
 - [Mastra Guide: Build an AI stock agent](https://mastra.ai/en/guides/guide/stock-agent)
-
-## Get Started
-
-To get started run the following command to start developing:
-We recommend using [pnpm](https://pnpm.io/installation), but you can try npm, or bun if you prefer.
-
-```sh
-pnpm install
-pnpm run dev
-```
 
 ## Assignment
 
