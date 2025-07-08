@@ -36,12 +36,14 @@ COPY --from=backend-builder /app/.mastra/output ./
 # Copy frontend static files
 COPY front/ ./frontend/
 
-# Accept build args and set as environment variables
-ARG GOOGLE_GENERATIVE_AI_API_KEY
-ENV GOOGLE_GENERATIVE_AI_API_KEY=$GOOGLE_GENERATIVE_AI_API_KEY
-
 # Copy .env file if it exists (for local development)
 COPY .env* ./
+
+# Install only production dependencies for the backend
+RUN pnpm install --prod --frozen-lockfile
+
+# Accept build args (don't store in ENV during build)
+ARG GOOGLE_GENERATIVE_AI_API_KEY
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \

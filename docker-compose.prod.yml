@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nosana-agent:
-    image: ${DOCKER_USERNAME}/nosana-agent:latest
+    image: himanshuraimau/nosana-agent:latest
     ports:
       - "3000:3000"
       - "8080:8080"
